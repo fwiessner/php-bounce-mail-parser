@@ -1,0 +1,28 @@
+{
+    "name": "sbknk/php-bounce-mail-parser",
+    "type": "library",
+    "description": "Library to analyze bounced emails",
+    "keywords": ["mime", "mail", "mailparse", "MimeMailParser", "bounce"],
+    "homepage": "https://github.com/sbknk/php-bounce-mail-parser",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Kenk",
+            "email": "github.extern@sebastiankenk.de",
+            "homepage": "https://github.com/sbknk/",
+            "role": "Developer"
+        }
+    ],
+    "repository":{
+        "type": "git",
+        "url": "https://github.com/sbknk/php-bounce-mail-parser.git"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "ext-mailparse": "*",
+        "php-mime-mail-parser/php-mime-mail-parser": ">=2.1"
+    },
+    "autoload": {
+        "psr-4": { "PhpBounceMailParser\\": "src/" }
+    }
+}
