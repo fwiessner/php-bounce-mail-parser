@@ -28,6 +28,13 @@ class Parser
     private $lines = NULL;
 
     /**
+     * Blacklist of emails which are ignored when try to find recipient of bounce mail
+     *
+     * @var array
+     */
+    private $emailBlacklist = array();
+
+    /**
      * @var resource
      */
     private $csv = NULL;
@@ -46,10 +53,12 @@ class Parser
     {
         $this->parser = new \PhpMimeMailParser\Parser();
 
+        $this->ignoreEmail('Mail Delivery System');
+
         $tenMegabytes = 10 * 1024 * 1024;
         $this->csv = fopen("php://temp/maxmemory:$tenMegabytes", 'r+');
 
-        if (FALSE === $this->csv)
+        if ($this->csv === FALSE)
         {
             throw new \Exception('Unable to open csv output stream');
         }
@@ -196,12 +205,15 @@ class Parser
             return preg_match("/^$header:/", $line);
         });
 
+        // remove blacklisted emails from matches
         foreach ($matches as $key => $match)
         {
-            if (strpos($match, 'no-reply@wf-ingbau.de') ||
-                strpos($match, 'Mail Delivery System'))
+            foreach ($this->emailBlacklist as $email)
             {
-                unset($matches[$key]);
+                if (strpos($match, $email) !== FALSE)
+                {
+                    unset($matches[$key]);
+                }
             }
         }
 
@@ -230,57 +242,6 @@ class Parser
     }
 
     /**
-     * Debugging helper
-     * Prints the given value to viewport
-     *
-     * @param string $value
-     * @param boolean $varDump
-     */
-    private function pr($value = null, $varDump = false)
-    {
-        switch (true)
-        {
-            case is_null($value):
-                $value = 'NULL';
-                break;
-
-            case is_bool($value):
-                $value = $value ? 'TRUE' : 'FALSE';
-                break;
-
-            case is_string($value) && empty($value):
-                $value = '<i>empty string</i>';
-                break;
-        }
-
-        if ($varDump === false)
-        {
-            $message = print_r($value, true);
-        }
-        else
-        {
-            $message = var_dump($value);
-        }
-
-        $bt = debug_backtrace();
-        $btLine = $bt[0];
-
-        echo '
-            <div style="margin: 10px; border: 1px solid #333333; font-family: Arial, Verdana;">
-                <div style="background: #333333; color: #ffffff; padding: 2px 10px 2px 10px; font-size: 12px;">
-                    ' . $btLine['file'] . ' : ' . $btLine['line'] . '
-                </div>
-                <pre style="padding: 10px; background: #ffffff;">' . $message . '</pre>
-            </div>
-        ';
-
-        if (count(ob_list_handlers()))
-        {
-            ob_flush();
-        }
-    }
-
-    /**
      * Set the csv delimiter
      *
      * @param string $delimiter
@@ -301,6 +262,18 @@ class Parser
     public function setCsvEnclosure($enclosure)
     {
         $this->csvEnclosure = $enclosure;
+        return $this;
+    }
+
+    /**
+     * Add email to blacklist which is ignored when try to find an recipient in bounced mail
+     *
+     * @param  string $email
+     * @return Parser
+     */
+    public function ignoreEmail($email)
+    {
+        array_push($this->emailBlacklist, $email);
         return $this;
     }
 }
