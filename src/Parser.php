@@ -2,6 +2,8 @@
 
 namespace PhpBounceMailParser;
 
+use PhpBounceMailParser\BounceCode;
+
 /**
  * Parse Bounce E-Mails and write csv result data
  *
@@ -72,7 +74,7 @@ class Parser
     /**
      * Try to find bounce reason within email header
      *
-     * @return string
+     * @return array including error code as key and the reason as value e.g. array(550 => 'mailbox unavailable')
      */
     private function findBounceReason($file)
     {
@@ -80,12 +82,12 @@ class Parser
         $result = array_filter($this->lines, array($this, 'findDiagnosticCode'));
         if (count($result) === 1)
         {
-            // @todo analyze diagnostic code
-            $this->pr($file);
+            $bounceCode = new BounceCode(substr(current($result), 17));
+            return $bounceCode->getCode();
         }
         else
         {
-            return self::REASON_AUTORESPONDER;
+            return array(self::REASON_AUTORESPONDER);
         }
     }
 
