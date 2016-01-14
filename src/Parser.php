@@ -14,7 +14,7 @@ class Parser
     const REASON_AUTORESPONDER = 'auto responder';
 
     /**
-     * @var PhpMimeMailParser\Parser
+     * @var \PhpMimeMailParser\Parser
      */
     private $parser = NULL;
 
@@ -27,7 +27,7 @@ class Parser
 
     public function __construct()
     {
-        $this->parser = new PhpMimeMailParser\Parser();
+        $this->parser = new \PhpMimeMailParser\Parser();
     }
 
     /**
@@ -80,6 +80,7 @@ class Parser
         $result = array_filter($this->lines, array($this, 'findDiagnosticCode'));
         if (count($result) === 1)
         {
+            // @todo analyze diagnostic code
             $this->pr($file);
         }
         else
