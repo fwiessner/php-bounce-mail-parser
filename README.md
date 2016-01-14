@@ -11,11 +11,11 @@ To install this library, run the command below and you will get the latest versi
 ```php
 <?php
 
-// initialize compser autoloader
-require_once __DIR__.'/vendor/autoload.php';
+// Initialize compser autoloader
+require_once __DIR__ . '/vendor/autoload.php';
 
 $path = 'path/to/mail.txt';
-$parser = new PhpBounceMailParser\Parser();
+$parser = new \PhpBounceMailParser\Parser();
 
 // You can specify a directory
 $parser->parseDirectory('path/to/directory');
