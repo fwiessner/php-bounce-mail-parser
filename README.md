@@ -14,7 +14,6 @@ To install this library, run the command below and you will get the latest versi
 // Initialize compser autoloader
 require_once __DIR__ . '/vendor/autoload.php';
 
-$path = 'path/to/mail.txt';
 $parser = new \PhpBounceMailParser\Parser();
 
 // You can specify a directory
@@ -22,6 +21,21 @@ $parser->parseDirectory('path/to/directory');
 
 // or a single file (e.g. *.eml)
 $parser->parseFile('path/to/file');
+
+// Specify emails to be ignored when trying to find the recipient as follows
+$parser->ignoreEmail('no-reply@wf-ingbau.de');
+
+// Finally get the data output directly in the browser
+$parser->outputCsv();
+
+// or as file download
+$parser->saveCsvAs();
+
+// Here is a complete working example
+$parser = new \PhpBounceMailParser\Parser();
+$parser->ignoreEmail('foo@bar.com')
+       ->parseDirectory(__DIR__ . '/resources')
+       ->outputCsv();
 
 ?>
 ```
