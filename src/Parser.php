@@ -223,7 +223,8 @@ class Parser
 
             // Append second indented line
             if (array_key_exists(key($matches) + 1, $this->lines) &&
-                $this->lines[key($matches) + 1][0] === "\t")
+                ($this->lines[key($matches) + 1][0] === "\t" ||
+                 substr($this->lines[key($matches) + 1], 0, 4) === "    "))
             {
                 $email .= $this->lines[key($matches) + 1];
             }
