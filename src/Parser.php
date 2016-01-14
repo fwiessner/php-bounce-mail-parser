@@ -27,9 +27,22 @@ class Parser
      */
     private $lines = NULL;
 
+    /**
+     * @var resource
+     */
+    private $csv = NULL;
+
     public function __construct()
     {
         $this->parser = new \PhpMimeMailParser\Parser();
+
+        $tenMegabytes = 10 * 1024 * 1024;
+        $this->csv = fopen("php://temp/maxmemory:$tenMegabytes", 'r+');
+
+        if (FALSE === $this->csv)
+        {
+            throw new \Exception('Unable to open csv output stream');
+        }
     }
 
     /**
@@ -64,11 +77,43 @@ class Parser
 
         $this->lines = file($file);
 
-
         $this->parser->setPath($file);
 
-        // $recipient = $this->findRecipient();
         $bounceReason = $this->findBounceReason($file);
+
+        fputcsv($this->csv, array(
+            $this->findRecipient(),
+            key($bounceReason),
+            current($bounceReason)
+        ));
+    }
+
+    /**
+     * Output csv data
+     *
+     * @return void
+     */
+    public function outputCsv()
+    {
+        rewind($this->csv);
+        $content = stream_get_contents($this->csv);
+        fclose($this->csv);
+
+        echo $content;
+    }
+
+    /**
+     * Output csv data and save as file
+     *
+     * @return void
+     */
+    public function saveCsvAs()
+    {
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment;filename=bounces.csv');
+
+        $this->outputCsv();
+
     }
 
     /**
@@ -113,6 +158,8 @@ class Parser
                 $email = $this->findEmailInHeaderLine($header);
             }
         }
+
+        return $email;
     }
 
     private function findEmailInHeaderLine($header)
