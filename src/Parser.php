@@ -32,6 +32,16 @@ class Parser
      */
     private $csv = NULL;
 
+    /**
+     * @var string
+     */
+    private $csvDelimiter = ';';
+
+    /**
+     * @var string
+     */
+    private $csvEnclosure = '"';
+
     public function __construct()
     {
         $this->parser = new \PhpMimeMailParser\Parser();
@@ -49,7 +59,7 @@ class Parser
      * Parse the given directory with email resources
      *
      * @param  string $directory path/to/directory
-     * @return void
+     * @return Parser
      */
     public function parseDirectory($directory)
     {
@@ -62,13 +72,15 @@ class Parser
         {
             $this->parseFile($directory . '/' . $mail);
         }
+
+        return $this;
     }
 
     /**
      * Parse the given email resource
      *
      * @param  string $file path/to/file
-     * @return void
+     * @return Parser
      */
     public function parseFile($file)
     {
@@ -79,13 +91,18 @@ class Parser
 
         $this->parser->setPath($file);
 
-        $bounceReason = $this->findBounceReason($file);
+        $bounceReason = $this->findBounceReason();
 
         fputcsv($this->csv, array(
-            $this->findRecipient(),
-            key($bounceReason),
-            current($bounceReason)
-        ));
+                $this->findRecipient(),
+                key($bounceReason),
+                current($bounceReason)
+            ),
+            $this->csvDelimiter,
+            $this->csvEnclosure
+        );
+
+        return $this;
     }
 
     /**
@@ -113,7 +130,6 @@ class Parser
         header('Content-Disposition: attachment;filename=bounces.csv');
 
         $this->outputCsv();
-
     }
 
     /**
@@ -121,7 +137,7 @@ class Parser
      *
      * @return array including error code as key and the reason as value e.g. array(550 => 'mailbox unavailable')
      */
-    private function findBounceReason($file)
+    private function findBounceReason()
     {
         // Check if there is an diagnostic code in email header
         $result = array_filter($this->lines, array($this, 'findDiagnosticCode'));
@@ -136,11 +152,18 @@ class Parser
         }
     }
 
+    /**
+     * @param  string $line
+     * @return array
+     */
     private function findDiagnosticCode($line)
     {
         return preg_match('/^Diagnostic-Code:/', $line);
     }
 
+    /**
+     * @return string|null
+     */
     private function findRecipient()
     {
         $email = null;
@@ -162,6 +185,10 @@ class Parser
         return $email;
     }
 
+    /**
+     * @param  string $header
+     * @return string|null
+     */
     private function findEmailInHeaderLine($header)
     {
         $matches = array_filter($this->lines, function($line) use ($header)
@@ -251,5 +278,29 @@ class Parser
         {
             ob_flush();
         }
+    }
+
+    /**
+     * Set the csv delimiter
+     *
+     * @param string $delimiter
+     * @return Parser
+     */
+    public function setCsvDelimiter($delimiter)
+    {
+        $this->csvDelimiter = $delimiter;
+        return $this;
+    }
+
+    /**
+     * Set the csv enclosure
+     *
+     * @param string $enclosure
+     * @return Parser
+     */
+    public function setCsvEnclosure($enclosure)
+    {
+        $this->csvEnclosure = $enclosure;
+        return $this;
     }
 }
