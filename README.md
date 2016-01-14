@@ -1,8 +1,6 @@
 # Bounce email parser
 
-## How to install
-
-Easy way with [Composer](https://getcomposer.org/)-
+## How to install with [Composer](https://getcomposer.org/)
 
 To install this library, run the command below and you will get the latest version
 
