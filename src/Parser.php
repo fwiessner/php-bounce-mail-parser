@@ -73,7 +73,7 @@ class Parser
     public function parseDirectory($directory)
     {
         if ( ! file_exists($directory))
-            throw new Exception("Directory $directory does not exist.");
+            throw new \Exception("Directory $directory does not exist.");
 
         $mails = array_diff(scandir($directory), array('.', '..'));
 
@@ -94,7 +94,7 @@ class Parser
     public function parseFile($file)
     {
         if ( ! file_exists($file))
-            throw new Exception("File $file does not exist.");
+            throw new \Exception("File $file does not exist.");
 
         $this->lines = file($file);
 
