@@ -20,7 +20,7 @@
         }
     ],
     "repository":{
-        "type": "git",
+        "type": "vcs",
         "url": "https://github.com/fwiessner/php-bounce-mail-parser.git"
     },
     "require": {
