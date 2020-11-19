@@ -4,7 +4,7 @@
 
 To install this library, run the command below and you will get the latest version
 
-	composer require sbknk/php-bounce-mail-parser
+	composer require fwiessner/php-bounce-mail-parser
 
 ## How to use it
 
