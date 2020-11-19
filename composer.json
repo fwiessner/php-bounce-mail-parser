@@ -1,9 +1,9 @@
 {
-    "name": "sbknk/php-bounce-mail-parser",
+    "name": "fwiessner/php-bounce-mail-parser",
     "type": "library",
     "description": "Library to analyze bounced emails",
     "keywords": ["mime", "mail", "mailparse", "MimeMailParser", "bounce"],
-    "homepage": "https://github.com/sbknk/php-bounce-mail-parser",
+    "homepage": "https://github.com/fwiessner/php-bounce-mail-parser",
     "license": "MIT",
     "authors": [
         {
@@ -11,11 +11,17 @@
             "email": "github.extern@sebastiankenk.de",
             "homepage": "https://github.com/sbknk/",
             "role": "Developer"
+        },
+        {
+            "name": "Florian Wiessner",
+            "email": "f.wiessner@smart-weblications.de",
+            "homepage": "https://github.com/fwiessner/",
+            "role": "Developer"
         }
     ],
     "repository":{
         "type": "git",
-        "url": "https://github.com/sbknk/php-bounce-mail-parser.git"
+        "url": "https://github.com/fwiessner/php-bounce-mail-parser.git"
     },
     "require": {
         "php": ">=5.4.0",
