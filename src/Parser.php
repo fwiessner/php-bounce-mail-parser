@@ -113,6 +113,28 @@ class Parser
 
         return $this;
     }
+    
+    public function parseData($data)
+    {
+    	if ( empty($data))
+    		throw new \Exception("Data was empty");
+    
+    	$this->lines = $data;
+    
+    	   
+    	$bounceReason = $this->findBounceReason();
+    
+    	fputcsv($this->csv, array(
+    			$this->findRecipient(),
+    			key($bounceReason),
+    			current($bounceReason)
+    	),
+    			$this->csvDelimiter,
+    			$this->csvEnclosure
+    	);
+    
+    	return $this;
+    }
 
     /**
      * Output csv data
@@ -126,6 +148,21 @@ class Parser
         fclose($this->csv);
 
         echo $content;
+    }
+    
+    
+    /**
+     * return csv data
+     *
+     * @return string
+     */
+    public function returnCsv()
+    {
+    	rewind($this->csv);
+    	$content = stream_get_contents($this->csv);
+    	fclose($this->csv);
+    
+    	return $content;
     }
 
     /**
